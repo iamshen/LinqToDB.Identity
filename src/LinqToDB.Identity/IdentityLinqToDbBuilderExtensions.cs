@@ -17,6 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
 	/// </summary>
 	public static class IdentityLinqToDbBuilderExtensions
 	{
+
+
+
+
 		/// <summary>
 		///     Adds an linq2db plementation of identity information stores.
 		/// </summary>
@@ -126,6 +130,38 @@ namespace Microsoft.Extensions.DependencyInjection
 				userLoginType, 
 				userTokenType, 
 				builder.RoleType, 
+				roleClaimType));
+
+			return builder;
+		}
+
+
+		/// <summary>
+		/// Adds an linq2db implementation of identity information stores.
+		/// </summary>
+		/// <typeparam name="TConnectionFactory"> the implementation of  IConnectionFactory </typeparam>
+		/// <param name="builder"></param>
+		/// <param name="keyType">The type of the primary key used for the users and roles.</param>
+		/// <param name="userClaimType">The type representing a claim.</param>
+		/// <param name="userRoleType">The type representing a user role.</param>
+		/// <param name="userLoginType">The type representing a user external login.</param>
+		/// <param name="userTokenType">The type representing a user token.</param>
+		/// <param name="roleClaimType">The type of the class representing a role claim.</param>
+		/// <returns>The <see cref="IdentityBuilder" /> instance this method extends.</returns>
+		public static IdentityBuilder AddLinqToDBStores<TConnectionFactory>(this IdentityBuilder builder,
+			Type keyType, Type userClaimType, Type userRoleType, Type userLoginType, Type userTokenType, Type roleClaimType)
+			where TConnectionFactory : class, IConnectionFactory
+		{
+			builder.Services.AddSingleton(typeof(IConnectionFactory), typeof(TConnectionFactory));
+
+			builder.Services.TryAdd(GetDefaultServices(
+				keyType,
+				builder.UserType,
+				userClaimType,
+				userRoleType,
+				userLoginType,
+				userTokenType,
+				builder.RoleType,
 				roleClaimType));
 
 			return builder;
